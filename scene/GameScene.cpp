@@ -1,6 +1,7 @@
 ﻿#include "GameScene.h"
 #include "TextureManager.h"
 #include <cassert>
+#include <time.h>
 
 using namespace DirectX;
 
@@ -13,6 +14,7 @@ GameScene::~GameScene() {
 	delete modelStage_;
 	delete modelPlayer_;
 	delete modelBeam_;
+	delete modelEnemy_;
 }
 
 // 初期化
@@ -50,8 +52,18 @@ void GameScene::Initialize() {
 	modelBeam_ = Model::Create();
 	worldTransformBeam_.scale_ = {0.5f, 0.5f, 0.5f};
 	worldTransformBeam_.Initialize();
+
+	// 敵
+	textureHandleEnemy_ = TextureManager::Load("Enemy.png");
+	modelEnemy_ = Model::Create();
+	worldTransformEnemy_.scale_ = {0.5f, 0.5f, 0.5f};
+	worldTransformEnemy_.Initialize();
+
+	// 乱数の初期化
+	srand(time(NULL));
 }
 
+// プレイヤー更新
 void GameScene::PlayerUpdate() {
 	// 移動
 	// 右へ移動と右の移動範囲制限
@@ -67,13 +79,14 @@ void GameScene::PlayerUpdate() {
 	worldTransformPlayer_.UpdateMatrix();
 }
 
+// ビーム更新
 void GameScene::BeamUpdate() {
 	BeamMove();		// 移動
 
 	// 行列更新
 	worldTransformBeam_.UpdateMatrix();
 
-	BeamBorn();		// ビーム発生
+	BeamBorn();		// 発生
 }
 
 // ビーム移動
@@ -81,6 +94,10 @@ void GameScene::BeamMove() {
 	if (beamFlag_ == 1) {
 		worldTransformBeam_.translation_.z += 0.1f;	// 移動
 		worldTransformBeam_.rotation_.x += 0.1f;	// 回転
+	}
+	else {
+		worldTransformBeam_.translation_.z = worldTransformPlayer_.translation_.z;
+		worldTransformBeam_.translation_.x = worldTransformPlayer_.translation_.x;
 	}
 }
 
@@ -94,9 +111,40 @@ void GameScene::BeamBorn() {
 	}
 	// ビーム消滅
 	if (worldTransformBeam_.translation_.z>=40) {
-		worldTransformBeam_.translation_.z = worldTransformPlayer_.translation_.z;
-		worldTransformBeam_.translation_.x = worldTransformPlayer_.translation_.x;
 		beamFlag_ = 0;
+	}
+}
+
+void GameScene::EnemyUpdate() {
+	EnemyMove();	// 移動
+
+	// 行列更新
+	worldTransformEnemy_.UpdateMatrix();
+
+	EnemyBorn();	// 発生
+}
+
+// 敵移動
+void GameScene::EnemyMove() {
+	if (enemyFlag_ == 1) {
+		worldTransformEnemy_.translation_.z -= 0.1f; // 移動
+		worldTransformEnemy_.rotation_.x -= 0.1f;    // 回転
+	}
+
+	// 敵消滅
+	if (worldTransformEnemy_.translation_.z <= -5) {
+		enemyFlag_ = 0;
+	}
+}
+
+// 敵発生
+void GameScene::EnemyBorn() {
+	if (enemyFlag_ == 0) {
+		int x = rand() % 80;
+		float x2 = (float)x / 10 - 4;
+		worldTransformEnemy_.translation_.x = x2;
+		worldTransformEnemy_.translation_.z = 40;
+		enemyFlag_ = 1;
 	}
 }
 
@@ -104,6 +152,7 @@ void GameScene::BeamBorn() {
 void GameScene::Update() {
 	PlayerUpdate();
 	BeamUpdate();
+	EnemyUpdate();
 }
 
 // 表示
@@ -141,7 +190,9 @@ void GameScene::Draw() {
 	if (beamFlag_ == 1) {
 		modelBeam_->Draw(worldTransformBeam_, viewProjection_, textureHandleBeam_);
 	}
-
+	if (enemyFlag_ == 1) {
+		modelEnemy_->Draw(worldTransformEnemy_, viewProjection_, textureHandleEnemy_);
+	}
 
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();
