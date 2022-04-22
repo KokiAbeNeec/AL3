@@ -56,4 +56,17 @@ class GameScene {
 	uint32_t textureHandleBG_ = 0;
 	Sprite* spriteBG_ = nullptr;
 
+	// ビュープロジェクション（共通）
+	ViewProjection viewProjection_;
+
+	// ステージ
+	uint32_t textureHandleStage_ = 0;
+	Model* modelStage_ = nullptr;
+	WorldTransform worldTransformStage_;
+
+	// プレイヤー
+	uint32_t textureHandlePlayer_ = 0;
+	Model* modelPlayer_ = nullptr;
+	WorldTransform worldTransformPlayer_;
+	void PlayerUpdate();	// プレイヤー更新
 };
