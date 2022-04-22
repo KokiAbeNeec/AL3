@@ -8,7 +8,12 @@ using namespace DirectX;
 GameScene::GameScene() {}
 
 // デストラクタ
-GameScene::~GameScene() { delete modelPlayer_; }
+GameScene::~GameScene() { 
+	delete spriteBG_;
+	delete modelStage_;
+	delete modelPlayer_;
+	delete modelBeam_;
+}
 
 // 初期化
 void GameScene::Initialize() {
@@ -39,11 +44,16 @@ void GameScene::Initialize() {
 	modelPlayer_ = Model::Create();
 	worldTransformPlayer_.scale_ = {0.5f, 0.5f, 0.5f};
 	worldTransformPlayer_.Initialize();
+
+	// ビーム
+	textureHandleBeam_ = TextureManager::Load("Beam.png");
+	modelBeam_ = Model::Create();
+	worldTransformBeam_.scale_ = {0.5f, 0.5f, 0.5f};
+	worldTransformBeam_.Initialize();
 }
 
 void GameScene::PlayerUpdate() {
 	// 移動
-
 	// 右へ移動と右の移動範囲制限
 	if (input_->PushKey(DIK_RIGHT) && worldTransformPlayer_.translation_.x <= 4.0f) {
 		worldTransformPlayer_.translation_.x += 0.1f;
@@ -57,9 +67,43 @@ void GameScene::PlayerUpdate() {
 	worldTransformPlayer_.UpdateMatrix();
 }
 
+void GameScene::BeamUpdate() {
+	BeamMove();		// 移動
+
+	// 行列更新
+	worldTransformBeam_.UpdateMatrix();
+
+	BeamBorn();		// ビーム発生
+}
+
+// ビーム移動
+void GameScene::BeamMove() {
+	if (beamFlag_ == 1) {
+		worldTransformBeam_.translation_.z += 0.1f;	// 移動
+		worldTransformBeam_.rotation_.x += 0.1f;	// 回転
+	}
+}
+
+// ビーム発射（発生）
+void GameScene::BeamBorn() {
+	// ビーム発生
+	if (input_->PushKey(DIK_SPACE) && beamFlag_ == 0) {
+		worldTransformBeam_.translation_.z = worldTransformPlayer_.translation_.z;
+		worldTransformBeam_.translation_.x = worldTransformPlayer_.translation_.x;
+		beamFlag_ = 1;
+	}
+	// ビーム消滅
+	if (worldTransformBeam_.translation_.z>=40) {
+		worldTransformBeam_.translation_.z = worldTransformPlayer_.translation_.z;
+		worldTransformBeam_.translation_.x = worldTransformPlayer_.translation_.x;
+		beamFlag_ = 0;
+	}
+}
+
 // 更新
 void GameScene::Update() {
 	PlayerUpdate();
+	BeamUpdate();
 }
 
 // 表示
@@ -94,6 +138,10 @@ void GameScene::Draw() {
 	// ステージ
 	modelStage_->Draw(worldTransformStage_, viewProjection_, textureHandleStage_);
 	modelPlayer_->Draw(worldTransformPlayer_, viewProjection_, textureHandlePlayer_);
+	if (beamFlag_ == 1) {
+		modelBeam_->Draw(worldTransformBeam_, viewProjection_, textureHandleBeam_);
+	}
+
 
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();

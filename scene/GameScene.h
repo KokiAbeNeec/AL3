@@ -69,4 +69,13 @@ class GameScene {
 	Model* modelPlayer_ = nullptr;
 	WorldTransform worldTransformPlayer_;
 	void PlayerUpdate();	// プレイヤー更新
+
+	// ビーム
+	uint32_t textureHandleBeam_ = 0;
+	Model* modelBeam_ = nullptr;
+	WorldTransform worldTransformBeam_;
+	void BeamUpdate();		// ビーム更新
+	void BeamMove();		// ビーム移動
+	void BeamBorn();		// ビーム発生
+	int beamFlag_ = 0;
 };
