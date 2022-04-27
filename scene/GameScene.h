@@ -87,4 +87,13 @@ class GameScene {
 	void EnemyMove();		// 敵移動
 	int enemyFlag_ = 0;		// 存在フラグ
 	void EnemyBorn();		// 敵発生
+
+	// 衝突判定
+	void Collision();		// 衝突判定
+	void CollisionPlayerEnemy();	//衝突判定（プレイヤーと敵）
+	void CollisionBeamEnemy(); //衝突判定（ビームと敵）
+
+	// 表示
+	int gameScore_ = 0;		// ゲームスコア
+	int playerLife_ = 3;	// プレイヤーライフ
 };
