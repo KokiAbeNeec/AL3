@@ -95,5 +95,35 @@ class GameScene {
 
 	// 表示
 	int gameScore_ = 0;		// ゲームスコア
-	int playerLife_ = 3;	// プレイヤーライフ
+	int playerLife_ = 1;	// プレイヤーライフ
+
+	void GamePlayUpdate();		// ゲームプレイ更新
+	void GamePlayDraw3D();		// ゲームプレイ3D表示
+	void GamePlayDraw2DBack();  // ゲームプレイ背景2D表示
+	void GamePlayDraw2DNear();	// ゲームプレイ近景2D表示
+
+	int sceneMode_ = 1;		// シーンモード（0:ゲームプレイ 1:タイトル 2:ゲームオーバー）
+
+	void TitleUpdade();		// タイトル更新
+	void TitleDraw2DNear();	// タイトル2D
+
+	// タイトル（スプライト）
+	uint32_t textureHandleTitle_ = 0;
+	Sprite* spriteTitle_ = nullptr;
+
+	// エンター（スプライト）
+	uint32_t textureHandleEnter_ = 0;
+	Sprite* spriteEnter_ = nullptr;
+
+	int gameTimer_ = 0;
+
+	void GameOverUpdade();		// ゲームオーバー更新
+	void GameOverDraw2DNear();	// ゲームオーバー2D
+
+	// ゲームオーバー（スプライト）
+	uint32_t textureHandleGameOver_ = 0;
+	Sprite* spriteGameOver_ = nullptr;
+
+	// 初期化
+	void GamePlayStart();
 };
