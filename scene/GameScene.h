@@ -72,21 +72,23 @@ class GameScene {
 
 	// ビーム
 	uint32_t textureHandleBeam_ = 0;
-	Model* modelBeam_ = nullptr;
-	WorldTransform worldTransformBeam_;
+	Model* modelBeam_ = {};
+	WorldTransform worldTransformBeam_[10];
 	void BeamUpdate();		// ビーム更新
 	void BeamMove();		// ビーム移動
 	void BeamBorn();		// ビーム発生
-	int beamFlag_ = 0;		// 存在フラグ
+	int beamFlag_[10] = {}; // 存在フラグ
+	int beamTimer_ = 0;		// ビーム発射タイマー
 
 	// 敵
 	uint32_t textureHandleEnemy_ = 0;
-	Model* modelEnemy_ = nullptr;
-	WorldTransform worldTransformEnemy_;
+	Model* modelEnemy_ = 0;
+	WorldTransform worldTransformEnemy_[10];
 	void EnemyUpdate();		// 敵更新
 	void EnemyMove();		// 敵移動
-	int enemyFlag_ = 0;		// 存在フラグ
+	int enemyFlag_[10] = {}; // 存在フラグ
 	void EnemyBorn();		// 敵発生
+	float enemySpeed_[10] = {};	// 敵のスピード
 
 	// 衝突判定
 	void Collision();		// 衝突判定
