@@ -10,14 +10,21 @@ GameScene::GameScene() {}
 
 // デストラクタ
 GameScene::~GameScene() { 
-	delete spriteBG_;
 	delete modelStage_;
 	delete modelPlayer_;
 	delete modelBeam_;
 	delete modelEnemy_;
+	delete spriteBG_;
 	delete spriteTitle_;
 	delete spriteEnter_;
 	delete spriteGameOver_;
+	for (int i = 0; i < 5; i++) {
+		delete spriteNumber_[i];		
+	}
+	delete spriteScore_;
+	for (int i = 0; i < 3; i++) {
+		delete spriteLife_[i];	
+	}
 }
 
 // 初期化
@@ -80,6 +87,19 @@ void GameScene::Initialize() {
 	textureHandleGameOver_ = TextureManager::Load("gameover.png");
 	spriteGameOver_ = Sprite::Create(textureHandleGameOver_, {0, 200});
 
+	textureHandleNumber_ = TextureManager::Load("number.png");
+	for (int i = 0; i < 5; i++) {
+		spriteNumber_[i] = Sprite::Create(textureHandleNumber_, {300.0f + i * 26, 0});
+	}
+
+	textureHandleScore_ = TextureManager::Load("score.png");
+	spriteScore_ = Sprite::Create(textureHandleScore_, {150, 0});
+
+	textureHandleLife_ = TextureManager::Load("player.png");
+	for (int i = 0; i < 3; i++) {
+		spriteLife_[i] = Sprite::Create(textureHandleLife_, {900.0f + i * 60, 10});	
+	}
+
 	// サウンドデータの読み込み
 	soundDataHandleTitleBGM_ = audio_->LoadWave("Audio/Ring05.wav");
 	soundDataHandleGamePlayBGM_ = audio_->LoadWave("Audio/Ring08.wav");
@@ -101,6 +121,10 @@ void GameScene::PlayerUpdate() {
 	// 左へ移動と左の移動範囲制限
 	if (input_->PushKey(DIK_LEFT) && worldTransformPlayer_.translation_.x >= -4.0f) {
 		worldTransformPlayer_.translation_.x -= 0.1f;
+	}
+
+	if (playerTimer_ > 0) {
+		playerTimer_--;
 	}
 
 	// 行列更新
@@ -266,6 +290,7 @@ void GameScene::CollisionPlayerEnemy() {
 				enemyJumpSpeed_[i] = 1;
 				enemyFlag_[i] = 2;
 				playerLife_--;
+				playerTimer_ = 60;
 				audio_->PlayWave(soundDataHandlePlayerHitSE_);
 			}
 		}
@@ -348,6 +373,37 @@ void GameScene::GameOverDraw2DNear() {
 	 }
  }
 
+// スコア数値の表示
+void GameScene::DrawScore() {
+	spriteScore_->Draw();
+
+	// 各桁の値を取り出す
+	char eachNumber[5] = {};			// 各桁の値
+	int number = gameScore_;			// 表示する数字
+
+	int keta = 10000;					// 最初の桁
+
+	for (int i = 0; i < 5; i++) {
+		eachNumber[i] = number / keta;	// 今の桁の値を求める
+		number = number % keta;			// 次の桁以下の値を取り出す
+		keta = keta / 10;				// 桁を進める
+	}
+
+	// 各桁の数値を描画
+	for (int i = 0; i < 5; i++) {
+		spriteNumber_[i]->SetSize({32, 64});
+		spriteNumber_[i]->SetTextureRect({32.0f * eachNumber[i], 0}, {32, 64});
+		spriteNumber_[i]->Draw();
+	}
+
+	// ライフを描画
+	for (int i = 0; i < playerLife_; i++) {
+		spriteLife_[i]->SetSize({40, 40});
+		spriteLife_[i]->SetTextureRect({0, 0}, {200, 200});
+		spriteLife_[i]->Draw();	
+	}
+ }
+
 // 初期化
 void GameScene::GamePlayStart() {
 	 for (int i = 0; i < 10; i++) {
@@ -355,6 +411,7 @@ void GameScene::GamePlayStart() {
 		 beamFlag_[i] = 0;
 	 }
 	 gameTimer_ = 0;
+	 playerTimer_ = 0;
 	playerLife_ = 3;
 	gameScore_ = 0;
  }
@@ -409,8 +466,10 @@ void GameScene::GamePlayDraw3D() {
 	}
 
 	// プレイヤー
-	modelPlayer_->Draw(worldTransformPlayer_, viewProjection_, textureHandlePlayer_);
-
+	if (playerTimer_ % 4 < 2) {
+		modelPlayer_->Draw(worldTransformPlayer_, viewProjection_, textureHandlePlayer_);
+	}
+	
 	// ビーム
 	for (int i = 0; i < 10; i++) {
 		if (beamFlag_[i] == 1) {
@@ -434,12 +493,8 @@ void GameScene::GamePlayDraw2DBack() {
 
 // ゲームプレイ近景2D表示
 void GameScene::GamePlayDraw2DNear() {
-	char str[100];
-	sprintf_s(str, "SCORE %d", gameScore_);
-	debugText_->Print(str, 200, 10, 2);
-
-	sprintf_s(str, "LIFE %d", playerLife_);
-	debugText_->Print(str, 900, 10, 2);
+	// スコア表示
+	DrawScore();
 }
 
 // 表示

@@ -52,9 +52,7 @@ class GameScene {
 	/// ゲームシーン用
 	/// </summary>
 	
-	// BG（スプライト）
-	uint32_t textureHandleBG_ = 0;
-	Sprite* spriteBG_ = nullptr;
+
 
 	// ビュープロジェクション（共通）
 	ViewProjection viewProjection_;
@@ -116,15 +114,25 @@ class GameScene {
 	void GameOverDraw2DNear();	// ゲームオーバー2D
 
 	// スプライト
-	uint32_t textureHandleTitle_ = 0;		// タイトル（スプライト）
+	void DrawScore();
+	uint32_t textureHandleTitle_ = 0;		// タイトル
 	Sprite* spriteTitle_ = nullptr;
-	uint32_t textureHandleEnter_ = 0;		// エンター（スプライト）
+	uint32_t textureHandleEnter_ = 0;		// エンター
 	Sprite* spriteEnter_ = nullptr;	
-	uint32_t textureHandleGameOver_ = 0;	// ゲームオーバー（スプライト）
+	uint32_t textureHandleGameOver_ = 0;	// ゲームオーバー
 	Sprite* spriteGameOver_ = nullptr;
+	uint32_t textureHandleBG_ = 0;			// BG
+	Sprite* spriteBG_ = nullptr;
+	uint32_t textureHandleNumber_ = 0;		// スコア数値
+	Sprite* spriteNumber_[5] = {};
+	uint32_t textureHandleScore_ = 0;		// スコア
+	Sprite* spriteScore_ = nullptr;
+	uint32_t textureHandleLife_ = 0;		// ライフ
+	Sprite* spriteLife_[3] = {};
 
 	// ゲームタイマー
 	int gameTimer_ = 0;
+	int playerTimer_ = 0;
 
 	// 初期化
 	void GamePlayStart();
