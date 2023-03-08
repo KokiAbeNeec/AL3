@@ -10,6 +10,12 @@
 #include "ViewProjection.h"
 #include "WorldTransform.h"
 #include <DirectXMath.h>
+#include "Enemy.h"
+#include "Enemy3.h"
+#include "Player.h"
+#include "Enemy2.h"
+#include "Beam.h"
+#include "Line.h"
 
 /// <summary>
 /// ゲームシーン
@@ -56,6 +62,23 @@ class GameScene {
 	uint32_t textureHandleBG_ = 0;
 	Sprite* spriteBG_ = nullptr;
 
+	// タイトル
+	uint32_t textureHandleTitle_ = 0;
+	Sprite* spriteTitle_ = nullptr;
+	// ゲームオーバー
+	uint32_t textureHandleGameOver_ = 0;
+	Sprite* spriteGameOver_ = nullptr;
+	uint32_t textureHandleGameOverFont_ = 0;
+	Sprite* spriteGameOverFont_ = nullptr;
+	// ゲームクリア
+	uint32_t textureHandleGameClear_ = 0;
+	Sprite* spriteGameClear_ = nullptr;
+	uint32_t textureHandleGameClearFont_ = 0;
+	Sprite* spriteGameClearFont_ = nullptr;
+	// 決定
+	uint32_t textureHandlePush_ = 0;
+	Sprite* spritePush_ = nullptr;
+
 	// ビュープロジェクション（共通）
 	ViewProjection viewProjection_;
 
@@ -64,36 +87,38 @@ class GameScene {
 	Model* modelStage_ = nullptr;
 	WorldTransform worldTransformStage_;
 
-	// プレイヤー
-	uint32_t textureHandlePlayer_ = 0;
-	Model* modelPlayer_ = nullptr;
-	WorldTransform worldTransformPlayer_;
-	void PlayerUpdate();	// プレイヤー更新
-
-	// ビーム
-	uint32_t textureHandleBeam_ = 0;
-	Model* modelBeam_ = nullptr;
-	WorldTransform worldTransformBeam_;
-	void BeamUpdate();		// ビーム更新
-	void BeamMove();		// ビーム移動
-	void BeamBorn();		// ビーム発生
-	int beamFlag_ = 0;		// 存在フラグ
-
-	// 敵
-	uint32_t textureHandleEnemy_ = 0;
-	Model* modelEnemy_ = nullptr;
-	WorldTransform worldTransformEnemy_;
-	void EnemyUpdate();		// 敵更新
-	void EnemyMove();		// 敵移動
-	int enemyFlag_ = 0;		// 存在フラグ
-	void EnemyBorn();		// 敵発生
-
 	// 衝突判定
 	void Collision();		// 衝突判定
-	void CollisionPlayerEnemy();	//衝突判定（プレイヤーと敵）
+	void CollisionPlayerEnemy2();	//衝突判定（プレイヤーと敵2）
+	void CollisionPlayerEnemy3(); //衝突判定（プレイヤーと敵3）
 	void CollisionBeamEnemy(); //衝突判定（ビームと敵）
+	void CollisionLineEnemy();	// 衝突判定（線と敵）
 
 	// 表示
-	int gameScore_ = 0;		// ゲームスコア
 	int playerLife_ = 3;	// プレイヤーライフ
+	int s = 0;
+
+	// シーン
+	int sceneMode_ = 0;        // ゲームシーン
+	void TitleUpdade();        // タイトル更新
+	void GameOverUpdade();     // ゲームオーバー更新
+	void GameClearUpdade();     // ゲームオーバー更新
+
+	// 初期化
+	void GamePlayStart();
+
+	// サウンド
+	uint32_t soundDataHandleTitleBGM_ = 0;    // タイトルBGM
+	uint32_t soundDataHandleGamePlayBGM_ = 0; // ゲームプレイBGM
+	uint32_t soundDataHandleGameOverBGM_ = 0; // ゲームオーバーBGM
+	uint32_t soundDataHandleEnemyHitSE_ = 0;  // 敵ヒットSE
+	uint32_t soundDataHandlePushHitSE_ = 0;  // 決定SE
+	uint32_t voiceHandleBGM_ = 0;             // 音声再生ハンドル
+
+	Enemy* enemy;
+	Enemy3* enemy3;
+	Player* player;
+	Enemy2* enemy2;
+	Beam* beam;
+	Line* line;
 };

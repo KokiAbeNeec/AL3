@@ -18,7 +18,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	// ゲームウィンドウの作成
 	win = WinApp::GetInstance();
-	win->CreateGameWindow("LE2D_01_アベ_コウキ_AL3");
+	win->CreateGameWindow("2365_アニマルキャッチ");
 
 	// DirectX初期化処理
 	dxCommon = DirectXCommon::GetInstance();
