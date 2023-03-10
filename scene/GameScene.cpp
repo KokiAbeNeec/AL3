@@ -12,11 +12,9 @@ GameScene::GameScene() {}
 GameScene::~GameScene() { 
 	delete spriteBG_;
 	delete modelStage_;
-	delete beam;
 	delete enemy;
 	delete enemy2;
 	delete enemy3;
-	delete line;
 	delete player;
 }
 
@@ -73,183 +71,22 @@ void GameScene::Initialize() {
 	// 乱数の初期化
 	srand(time(NULL));
 
-	enemy = new Enemy();
-	enemy->Initialize();
-
-	enemy3 = new Enemy3();
-	enemy3->Initialize();
-
 	player = new Player();
 	player->Initialize();
 
+	enemy = new Enemy();
+	enemy->Initialize();
+
 	enemy2 = new Enemy2();
-	enemy2->Initialize(player);
+	enemy2->Initialize();
 
-	beam = new Beam();
-	beam->Initialize(player);
-
-	line = new Line();
-	line->Initialize(player);
-}
-
-// 衝突判定
-void GameScene::Collision() { 
-	// 衝突判定（プレイヤーと敵2）
-	CollisionPlayerEnemy2();
-	// 衝突判定（プレイヤーと敵3）
-	CollisionPlayerEnemy3();
-	// 衝突判定（ビームと敵）
-	CollisionBeamEnemy();
-	// 衝突判定（線と敵）
-	CollisionLineEnemy();
-}
-
-// 衝突判定（プレイヤーと敵2）
-void GameScene::CollisionPlayerEnemy2() {
-	// 敵2が存在すれば
-	if (enemy2->GetEnemy2Flag() == 1) {
-		// 差を求める
-		float dx = abs(player->GetPlayerX() - enemy2->GetEnemy2X());
-		float dz = abs(player->GetPlayerZ() - enemy2->GetEnemy2Z());
-		// 衝突したら
-		if (dx < 1 && dz < 1) {
-			enemy2->Hit();
-			enemy3->Hit();
-			player->PlayerResetX();
-			player->PlayerResetZ();
-			for (int i = 0; i < 15; i++) {
-				line->LineResetX(i);
-				line->LineResetZ(i);
-				line->LineResetTime(i);
-			}
-			playerLife_--;
-			audio_->PlayWave(soundDataHandleEnemyHitSE_);
-			if (playerLife_ == 0) {
-				sceneMode_ = 2;
-				// BGM切り替え
-				audio_->StopWave(voiceHandleBGM_); // BGMを停止
-				voiceHandleBGM_ =
-				  audio_->PlayWave(soundDataHandleGameOverBGM_, true); // ゲームプレイBGMを再生
-			}
-		}
-	}
-}
-
-// 衝突判定（プレイヤーと敵3）
-void GameScene::CollisionPlayerEnemy3() {
-	// 敵2が存在すれば
-	if (enemy3->GetEnemy3Flag() == 1) {
-		// 差を求める
-		float dx = abs(player->GetPlayerX() - enemy3->GetEnemy3X());
-		float dz = abs(player->GetPlayerZ() - enemy3->GetEnemy3Z());
-		// 衝突したら
-		if (dx < 1 && dz < 1) {
-			enemy2->Hit();
-			enemy3->Hit();
-			player->PlayerResetX();
-			player->PlayerResetZ();
-			for (int i = 0; i < 15; i++) {
-				line->LineResetX(i);
-				line->LineResetZ(i);
-				line->LineResetTime(i);
-			}
-			playerLife_--;
-			audio_->PlayWave(soundDataHandleEnemyHitSE_);
-			if (playerLife_ == 0) {
-				sceneMode_ = 2;
-				// BGM切り替え
-				audio_->StopWave(voiceHandleBGM_); // BGMを停止
-				voiceHandleBGM_ =
-				  audio_->PlayWave(soundDataHandleGameOverBGM_, true); // ゲームプレイBGMを再生
-			}
-		}
-	}
-}
-
-// 衝突判定（ビームと敵）
-void GameScene::CollisionBeamEnemy() {
-	//// 敵が存在すれば
-	//if (enemy->GetEnemyFlag() == 1) {
-	//	// 差を求める
-	//	float dx = abs(beam->GetBeamX() - enemy->GetEnemyX());
-	//	float dz = abs(beam->GetBeamZ() - enemy->GetEnemyZ());
-	//	// 衝突したら
-	//	if (dx < 1 && dz < 1) {
-	//		// 存在しない
-	//		//enemy->GetEnemyFlag() == 0;
-	//		enemy->Hit();
-	//		beam->Hit();
-	//		gameScore_++;
-	//	}
-	//}
-}
-
-void GameScene::CollisionLineEnemy() {
-	// 敵が存在すれば
-	if (enemy->GetEnemyFlag() == 1) {
-		// 差を求める
-		for (int i = 0; i < 15; i++) {
-			float dx = abs(player->GetPlayerX() - line->GetLineX(i));
-			float dz = abs(player->GetPlayerZ() - line->GetLineZ(i));
-			// 衝突したら
-			if (dx < 1 && dz < 1) {
-				int a = 0;
-				int b = 0;
-				int c = 0;
-				int d = 0;
-				for (int k = 0; k < 15; k++) {
-					float dx2 = abs(line->GetLineX(k) - enemy->GetEnemyX());
-					float dz2 = abs(line->GetLineZ(k) - enemy->GetEnemyZ());
-					if (dx2 > 1) {
-						line->HitL();
-						a = 1;
-					}
-					if (dx2 < 1) {
-						line->HitR();
-						b = 1;
-					}
-					if (dz2 > 1) {
-						line->HitU();
-						c = 1;
-					}
-					if (dz2 < 1) {
-						line->HitD();
-						d = 1;
-					}
-					if (a == 1 && b == 1 && c == 1 && d == 1) {
-						k = 15;
-						s += 1;
-						if (s == 10) {
-							sceneMode_ = 3;
-							// BGM切り替え
-							audio_->StopWave(voiceHandleBGM_); // BGMを停止
-							voiceHandleBGM_ = audio_->PlayWave(
-							  soundDataHandleGameOverBGM_, true); // ゲームプレイBGMを再生
-						}
-					}
-					line->FullHit(enemy);
-				}
-			}
-			line->HitReset();
-		}
-	}
+	enemy3 = new Enemy3();
+	enemy3->Initialize();
 }
 
 // 初期化
 void GameScene::GamePlayStart() { 
-	player->PlayerResetX();
-	player->PlayerResetZ();
-	line->GameScoreReset();
-	for (int i = 0; i < 15; i++) {
-		line->LineResetX(i);
-		line->LineResetZ(i);
-		line->LineResetTime(i);
-	}
-	enemy->Hit();
-	enemy2->Hit();
-	enemy3->Hit();
-	playerLife_ = 3;
-	s = 0;
+
 }
 
 // タイトル更新
@@ -303,11 +140,9 @@ void GameScene::Update() {
 		break;
 	case 1:
 		player->Update();
-		Collision();
 		enemy->Update();
 		enemy2->Update();
 		enemy3->Update();
-		line->Update();
 		break;
 	case 2:
 		GameOverUpdade();
@@ -369,11 +204,9 @@ void GameScene::Draw() {
 		modelStage_->Draw(worldTransformStage_, viewProjection_, textureHandleStage_);
 
 		player->Draw(viewProjection_);
-		beam->Draw(viewProjection_);
 		enemy->Draw(viewProjection_);
 		enemy2->Draw(viewProjection_);
 		enemy3->Draw(viewProjection_);
-		line->Draw(viewProjection_);
 		break;
 	}
 
@@ -390,14 +223,8 @@ void GameScene::Draw() {
 	/// </summary>
 	switch (sceneMode_) {
 	case 1:
-		// ゲームスコア
 		char str[100];
-		sprintf_s(str, "SCORE %d", line->GetGameScore());
-		debugText_->Print(str, 200, 10, 2);
 
-		// プレイヤーライフ
-		sprintf_s(str, "LIFE %d", playerLife_);
-		debugText_->Print(str, 900, 10, 2);
 		break;
 	}
 

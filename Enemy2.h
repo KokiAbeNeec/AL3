@@ -10,7 +10,6 @@
 #include "ViewProjection.h"
 #include "WorldTransform.h"
 #include <DirectXMath.h>
-#include "Player.h"
 
 class Enemy2 {
   public: // メンバ関数
@@ -27,7 +26,7 @@ class Enemy2 {
 	/// <summary>
 	/// 初期化
 	/// </summary>
-	void Initialize(Player* player);
+	void Initialize();
 
 	/// <summary>
 	/// 毎フレーム処理
@@ -54,8 +53,6 @@ class Enemy2 {
 	Model* modelEnemy2_ = 0;
 	WorldTransform worldTransformEnemy2_;
 
-	float enemy2Speed_ = 0.05f;
+	float enemy2Speed_ = 0;	// 移動速度
 	int enemy2Flag_ = 0; // 存在フラグ
-
-	Player* player_;
 };

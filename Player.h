@@ -42,8 +42,6 @@ class Player {
 
 	float GetPlayerX() { return worldTransformPlayer_.translation_.x; }
 	float GetPlayerZ() { return worldTransformPlayer_.translation_.z; }
-	float PlayerResetX() { return worldTransformPlayer_.translation_.x = 0; }
-	float PlayerResetZ() { return worldTransformPlayer_.translation_.z = -1.0f; }
 
 	private:
 	Input* input_ = nullptr;
@@ -51,4 +49,7 @@ class Player {
 	uint32_t textureHandlePlayer_ = 0;
 	Model* modelPlayer_ = nullptr;
 	WorldTransform worldTransformPlayer_;
+
+	float playerSpeed_ = 0; // ˆÚ“®‘¬“x
+	int playerFlag_ = 0; // ‘¶İƒtƒ‰ƒO
 };

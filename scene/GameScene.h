@@ -10,12 +10,11 @@
 #include "ViewProjection.h"
 #include "WorldTransform.h"
 #include <DirectXMath.h>
-#include "Enemy.h"
-#include "Enemy3.h"
 #include "Player.h"
+#include "Enemy.h"
 #include "Enemy2.h"
-#include "Beam.h"
-#include "Line.h"
+#include "Enemy3.h"
+
 
 /// <summary>
 /// ゲームシーン
@@ -87,16 +86,8 @@ class GameScene {
 	Model* modelStage_ = nullptr;
 	WorldTransform worldTransformStage_;
 
-	// 衝突判定
-	void Collision();		// 衝突判定
-	void CollisionPlayerEnemy2();	//衝突判定（プレイヤーと敵2）
-	void CollisionPlayerEnemy3(); //衝突判定（プレイヤーと敵3）
-	void CollisionBeamEnemy(); //衝突判定（ビームと敵）
-	void CollisionLineEnemy();	// 衝突判定（線と敵）
-
 	// 表示
-	int playerLife_ = 3;	// プレイヤーライフ
-	int s = 0;
+
 
 	// シーン
 	int sceneMode_ = 0;        // ゲームシーン
@@ -115,10 +106,8 @@ class GameScene {
 	uint32_t soundDataHandlePushHitSE_ = 0;  // 決定SE
 	uint32_t voiceHandleBGM_ = 0;             // 音声再生ハンドル
 
-	Enemy* enemy;
-	Enemy3* enemy3;
 	Player* player;
+	Enemy* enemy;
 	Enemy2* enemy2;
-	Beam* beam;
-	Line* line;
+	Enemy3* enemy3;
 };

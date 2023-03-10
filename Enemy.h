@@ -46,11 +46,13 @@ class Enemy {
 	float GetEnemyX() { return worldTransformEnemy_.translation_.x; }
 	float GetEnemyZ() { return worldTransformEnemy_.translation_.z; }
 	void Hit() { enemyFlag_ = 0; }
+
 	private:
 	// “G
 	uint32_t textureHandleEnemy_ = 0;
 	Model* modelEnemy_ = 0;
 	WorldTransform worldTransformEnemy_;
 
+	float enemySpeed_ = 0;	// ˆÚ“®‘¬“x
 	int enemyFlag_ = 0; // ‘¶İƒtƒ‰ƒO
 };

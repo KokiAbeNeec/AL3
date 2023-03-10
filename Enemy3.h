@@ -53,6 +53,6 @@ class Enemy3 {
 	Model* modelEnemy3_ = 0;
 	WorldTransform worldTransformEnemy3_;
 
-	float enemy3Speed_ = 0;
+	float enemy3Speed_ = 0; // ˆÚ“®‘¬“x
 	int enemy3Flag_ = 0; // ‘¶İƒtƒ‰ƒO
 };
